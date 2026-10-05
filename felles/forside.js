@@ -529,9 +529,9 @@ const setting = (() => {
   const M = T.mens;
   const glider = $('#dager', seksjon), utVerdi = $('.dagvelger-verdi', seksjon);
   const felt = {}; $$('[data-felt]', seksjon).forEach(el => { felt[el.dataset.felt] = el; });
-  const frister = { rokting: $('[data-frist="rokting"]', seksjon), meldefrist: $('[data-frist="meldefrist"]', seksjon) };
-  const fyll = { rokting: $('[data-frist="rokting"] .skala-fyll', seksjon), meldefrist: $('[data-frist="meldefrist"] .skala-fyll', seksjon) };
-  const varsel = { rokting: $('.varsel-rokting', seksjon), meldefrist: $('.varsel-meldefrist', seksjon) };
+  const frister = { meldefrist: $('[data-frist="meldefrist"]', seksjon) };
+  const fyll = { meldefrist: $('[data-frist="meldefrist"] .skala-fyll', seksjon) };
+  const varsel = { meldefrist: $('.varsel-meldefrist', seksjon) };
   const figur = $('.mens-figur', seksjon);
   const redskap = $$('.redskap[data-timer]', figur);
   const roktetKnapp = $('.roktet', seksjon), svar = $('.roktet-svar', seksjon);
@@ -549,16 +549,12 @@ const setting = (() => {
     if (roktetDag !== null && d < roktetDag) { roktetDag = null; svar.textContent = ''; }
     const naa = NAA0 + d * DAG;
     const grunn = roktetDag === null ? SATT : NAA0 + roktetDag * DAG;
-    const roktefrist = grunn + 7 * DAG, meldefrist = grunn + 14 * DAG;
+    const meldefrist = grunn + 14 * DAG;
     felt.iSjoen.textContent = statid(naa - SATT);
-    felt.tilRokting.textContent = frist(roktefrist, naa);
     felt.tilMeldefrist.textContent = frist(meldefrist, naa);
-    const rIgjen = roktefrist - naa, mIgjen = meldefrist - naa;
-    frister.rokting.classList.toggle('haster', rIgjen < DAG);
+    const mIgjen = meldefrist - naa;
     frister.meldefrist.classList.toggle('haster', mIgjen < 2 * DAG);
-    sett(fyll.rokting, 'transform', `scaleX(${klem(0, rIgjen / (7 * DAG), 1).toFixed(4)})`);
     sett(fyll.meldefrist, 'transform', `scaleX(${klem(0, mIgjen / (14 * DAG), 1).toFixed(4)})`);
-    varsel.rokting.classList.toggle('vis', roktetDag === null && d >= M.varsler[0].fraDag);
     varsel.meldefrist.classList.toggle('vis', roktetDag === null && d >= M.varsler[1].fraDag);
     for (const el of redskap) el.classList.toggle('gammel', Number(el.dataset.timer) + d * 24 > M.svakEtterTimer);
     if (felt.gammelt) felt.gammelt.textContent = `garn · ikke meldt tatt opp på ${M.gammeltGarnDager + d}${NBSP}d`;
@@ -575,7 +571,7 @@ const setting = (() => {
     avbrytHint();
     roktetDag = Number(glider.value);
     vis(roktetDag);
-    svar.textContent = 'Røktet og godkjent. Begge klokkene starter på nytt.';
+    svar.textContent = 'Røktet og godkjent. Klokka starter på nytt.';
   });
   vis(0);
   nullstill(avbrytHint);
